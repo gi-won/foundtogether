@@ -742,6 +742,7 @@ function openPropertyModal(propertyId) {
       <h4>매물 설명</h4>
       <p>${property.detailedDescription || property.description}</p>
     </div>
+    <!-- 상세 문의 페이지 버튼 삭제
     <div class="property-modal__actions">
       <button class="btn btn--primary" onclick="requestAiRecommendation(${property.id})">
         AI 추천 받기
@@ -752,6 +753,7 @@ function openPropertyModal(propertyId) {
       <button class="btn btn--outline" onclick="openInquiryForm(${property.id})">
         매물 문의
       </button>
+      -->
     </div>
   `;
   
