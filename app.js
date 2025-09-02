@@ -416,7 +416,7 @@ function navigateToSection(sectionId) {
   
   // Special handling for main page - show all main sections
   if (sectionId === 'main') {
-    const mainSections = document.querySelectorAll('.hero, .services, .strengths, .popular-properties, .reviews, .consultation');
+    const mainSections = document.querySelectorAll('.hero, .services, .strengths, .popular-properties, .reviews');
     mainSections.forEach(section => {
       section.classList.remove('hidden');
     });

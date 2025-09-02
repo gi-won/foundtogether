@@ -845,11 +845,26 @@ select.form-control {
   display: none !important;
 }
 
-/* Hero Section */
+/* Hero Section - Updated for integrated consultation form */
 .hero {
   background: var(--color-bg-1);
   padding: 80px 0;
-  text-align: center;
+  /* text-align: center; - Removed as content is now flexed */
+}
+
+.hero__flex-container {
+  display: flex;
+  align-items: center; /* Vertically center content */
+  justify-content: center; /* Center the content horizontally */
+  gap: var(--space-32); /* Gap between hero text and form */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.hero__text-content {
+  flex: 1; /* Allows this content to grow */
+  min-width: 300px; /* Minimum width before wrapping */
+  max-width: 600px; /* Max width for hero text */
+  text-align: center; /* Keep text centered within its own flex item */
 }
 
 .hero__title {
@@ -862,9 +877,24 @@ select.form-control {
   font-size: var(--font-size-xl);
   color: var(--color-text-secondary);
   margin-bottom: var(--space-32);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+}
+
+/* Moved Consultation Form Card */
+.hero__consultation-card {
+  flex: 0 0 400px; /* Fixed width for the form on desktop */
+  max-width: 100%; /* Ensure it doesn't overflow */
+  background-color: var(--color-surface);
+  padding: var(--space-32);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-md);
+}
+
+.hero__consultation-card-title {
+  text-align: center;
+  margin-bottom: var(--space-24);
+  font-size: var(--font-size-2xl);
+  color: var(--color-text);
 }
 
 .hero__cta {
@@ -1099,22 +1129,18 @@ select.form-control {
 
 /* Consultation Section */
 .consultation {
-  background-color: var(--color-bg-5);
+  display: none !important; /* Hide the original section as it's been moved */
 }
-
-.consultation__content {
-  max-width: 600px;
-  margin: 0 auto;
+/*
+.consultation__content {  No longer needed, styles moved to hero__consultation-card 
 }
-
+*/
+/* This class is still used inside the card */
 .consultation__form {
-  background-color: var(--color-surface);
-  padding: var(--space-32);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-card-border);
-  margin-bottom: var(--space-24);
+  margin-bottom: 0; /* Remove bottom margin as the card has padding and the chatbot button is commented out */
 }
 
+/* This class is still used inside the card, but the button is commented out */
 .consultation__chatbot {
   display: block;
   margin: 0 auto;
@@ -1500,10 +1526,10 @@ button:focus-visible,
   }
 }
 
-/* Mobile Styles */
-@media (max-width: 768px) {
+/* Tablet & Mobile Styles */
+@media (max-width: 900px) {
   .header__mobile-toggle {
-    display: block;
+    display: block; /* Keep mobile toggle visible */
   }
   
   .header__nav {
@@ -1533,12 +1559,39 @@ button:focus-visible,
     border-radius: var(--radius-base);
   }
   
-  .hero__title {
+  /* Hero section mobile adjustments */
+  .hero {
+    padding: 60px 0; /* Adjust padding for mobile hero */
+  }
+
+  .hero__flex-container {
+    flex-direction: column; /* Stack content vertically */
+    align-items: center; /* Center items when stacked */
+    gap: var(--space-24); /* Adjust gap for mobile */
+  }
+
+  .hero__text-content {
+    max-width: 100%; /* Full width on mobile */
+    margin-left: 0; /* Remove auto margins */
+    margin-right: 0;
+  }
+
+  .hero__title { /* Adjust hero title for mobile */
     font-size: var(--font-size-3xl);
   }
   
-  .hero__subtitle {
+  .hero__subtitle { /* Adjust hero subtitle for mobile */
     font-size: var(--font-size-lg);
+  }
+
+  .hero__consultation-card {
+    flex: 0 0 auto; /* Allow form wrapper to take natural height */
+    width: 100%; /* Full width on mobile */
+    max-width: 400px; /* Keep a max-width for readability on very wide phones */
+  }
+
+  .hero__consultation-card-title {
+    font-size: var(--font-size-xl); /* Smaller title on mobile */
   }
   
   .section {
