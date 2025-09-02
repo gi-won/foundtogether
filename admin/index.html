@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>올인원 점포·창업 플랫폼 관리자</title>
+    
+    <!-- External CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 로딩 스피너 -->
+    <div id="loading-spinner" class="loading-overlay hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>처리중...</p>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- 확인 모달 -->
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirm-title">확인</h3>
+                <button class="close-modal" onclick="closeModal('confirm-modal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">정말 삭제하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--outline" onclick="closeModal('confirm-modal')">취소</button>
+                <button id="confirm-action" class="btn btn--primary">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 레이아웃 -->
+    <div class="admin-layout">
+        <!-- 헤더 -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button id="sidebar-toggle" class="btn btn--outline btn--sm">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <span>올인원 점포·창업</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>관리자</span>
+                </div>
+                <button class="btn btn--outline btn--sm">
+                    <i class="fas fa-sign-out-alt"></i>
+                    로그아웃
+                </button>
+            </div>
+        </header>
+
+        <!-- 사이드바 -->
+        <aside id="sidebar" class="admin-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-page="dashboard">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>대시보드</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="main-settings">
+                            <i class="fas fa-home"></i>
+                            <span>메인페이지 관리</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="properties">
+                            <i class="fas fa-building"></i>
+                            <span>창업물건 관리</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="faqs">
+                            <i class="fas fa-question-circle"></i>
+                            <span>FAQ 게시판 관리</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-page="inquiries">
+                            <i class="fas fa-comments"></i>
+                            <span>빠른상담 관리</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 메인 콘텐츠 -->
+        <main id="main-content" class="admin-main">
+            
+            <!-- 대시보드 페이지 -->
+            <div id="page-dashboard" class="page-content active">
+                <div class="page-header">
+                    <h1>대시보드</h1>
+                    <p>전체 현황을 한눈에 확인하세요</p>
+                </div>
+
+                <!-- 통계 위젯 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-success">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-inquiries">12</h3>
+                            <p>신규 문의 수</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-info">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-faqs">45</h3>
+                            <p>활성 FAQ 수</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-warning">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-visitors">2,847</h3>
+                            <p>월간 방문자 수</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-primary">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="stat-properties">156</h3>
+                            <p>총 매물 수</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 빠른 액션 버튼 -->
+                <div class="quick-actions">
+                    <h2>빠른 액션</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn--primary" onclick="navigateToPage('properties', 'add')">
+                            <i class="fas fa-plus"></i>
+                            새 매물 등록
+                        </button>
+                        <button class="btn btn--success" onclick="navigateToPage('faqs', 'add')">
+                            <i class="fas fa-question"></i>
+                            새 FAQ 작성
+                        </button>
+                        <button class="btn btn--warning" onclick="navigateToPage('inquiries')">
+                            <i class="fas fa-clock"></i>
+                            문의 답변 대기 <span class="badge">5</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 최근 활동 피드 -->
+                <div class="activity-feed">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card__body">
+                                    <h3>최근 등록된 매물</h3>
+                                    <div id="recent-properties" class="activity-table"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card">
+                                <div class="card__body">
+                                    <h3>답변 대기 중인 문의</h3>
+                                    <div id="pending-inquiries" class="activity-table"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card">
+                                <div class="card__body">
+                                    <h3>최근 수정된 FAQ</h3>
+                                    <div id="recent-faqs" class="activity-table"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 메인페이지 관리 -->
+            <div id="page-main-settings" class="page-content">
+                <div class="page-header">
+                    <h1>메인페이지 관리</h1>
+                    <p>홈페이지 설정을 관리하세요</p>
+                </div>
+
+                <div class="settings-sections">
+                    <!-- 히어로 섹션 -->
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>히어로 섹션</h3>
+                            <form id="hero-form">
+                                <div class="form-group">
+                                    <label class="form-label">메인 제목</label>
+                                    <input type="text" class="form-control" id="hero-title" value="올인원 점포·창업 플랫폼">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">부제목</label>
+                                    <input type="text" class="form-control" id="hero-subtitle" value="성공적인 창업을 위한 완벽한 솔루션">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">배경 이미지</label>
+                                    <div class="file-upload-area" id="hero-image-upload">
+                                        <i class="fas fa-upload"></i>
+                                        <p>이미지를 드래그하거나 클릭해서 업로드하세요</p>
+                                        <input type="file" accept="image/*" style="display: none;">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn--primary">저장</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 협력사 로고 -->
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>협력사 로고 관리</h3>
+                            <div id="partners-list"></div>
+                            <button class="btn btn--outline" onclick="addPartnerRow()">
+                                <i class="fas fa-plus"></i>
+                                로고 추가
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 사이트 설정 -->
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>사이트 기본 설정</h3>
+                            <form id="site-settings-form">
+                                <h4>회사 정보</h4>
+                                <div class="form-group">
+                                    <label class="form-label">주소</label>
+                                    <input type="text" class="form-control" id="company-address">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">대표자</label>
+                                    <input type="text" class="form-control" id="company-ceo">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">사업자번호</label>
+                                    <input type="text" class="form-control" id="company-license">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">개인정보관리책임자</label>
+                                    <input type="text" class="form-control" id="privacy-officer">
+                                </div>
+
+                                <h4>법무법인 파트너</h4>
+                                <div class="form-group">
+                                    <label class="form-label">법무법인 정보</label>
+                                    <textarea class="form-control" id="law-firm" rows="3"></textarea>
+                                </div>
+
+                                <h4>고객센터</h4>
+                                <div class="form-group">
+                                    <label class="form-label">전화번호</label>
+                                    <input type="tel" class="form-control" id="cs-phone">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">이메일</label>
+                                    <input type="email" class="form-control" id="cs-email">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">운영시간</label>
+                                    <input type="text" class="form-control" id="cs-hours">
+                                </div>
+                                
+                                <button type="submit" class="btn btn--primary">저장</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 창업물건 관리 -->
+            <div id="page-properties" class="page-content">
+                <div class="page-header">
+                    <h1>창업물건 관리</h1>
+                    <button class="btn btn--primary" onclick="showPropertyForm()">
+                        <i class="fas fa-plus"></i>
+                        새 매물 등록
+                    </button>
+                </div>
+
+                <!-- 필터 및 검색 -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="filters">
+                            <div class="filter-row">
+                                <select class="form-control" id="property-region-filter">
+                                    <option value="">지역 선택</option>
+                                    <option value="서울">서울</option>
+                                    <option value="부산">부산</option>
+                                    <option value="대구">대구</option>
+                                </select>
+                                <select class="form-control" id="property-business-filter">
+                                    <option value="">업종 선택</option>
+                                    <option value="카페">카페</option>
+                                    <option value="음식점">음식점</option>
+                                    <option value="서비스업">서비스업</option>
+                                </select>
+                                <select class="form-control" id="property-status-filter">
+                                    <option value="">상태 선택</option>
+                                    <option value="매물">매물</option>
+                                    <option value="계약중">계약중</option>
+                                    <option value="계약완료">계약완료</option>
+                                </select>
+                                <input type="text" class="form-control" id="property-search" placeholder="검색어 입력">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 매물 목록 -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="table-actions">
+                            <button class="btn btn--outline btn--sm" onclick="selectAllProperties()">전체 선택</button>
+                            <button class="btn btn--warning btn--sm" onclick="bulkDeleteProperties()">선택 삭제</button>
+                        </div>
+                        <div id="properties-table"></div>
+                        <div id="properties-pagination" class="pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 매물 등록/편집 폼 -->
+            <div id="page-property-form" class="page-content">
+                <div class="page-header">
+                    <h1 id="property-form-title">새 매물 등록</h1>
+                    <button class="btn btn--outline" onclick="navigateToPage('properties')">목록으로</button>
+                </div>
+
+                <form id="property-form" class="property-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">매물 제목 *</label>
+                            <input type="text" class="form-control" id="property-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">위치 *</label>
+                            <input type="text" class="form-control" id="property-location" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">월 임대료 (만원) *</label>
+                            <input type="number" class="form-control" id="property-rent" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">보증금 (만원) *</label>
+                            <input type="number" class="form-control" id="property-deposit" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">면적 (㎡) *</label>
+                            <input type="number" class="form-control" id="property-area" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">권리금 (만원)</label>
+                            <input type="number" class="form-control" id="property-keymoney">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">상태</label>
+                            <select class="form-control" id="property-status">
+                                <option value="매물">매물</option>
+                                <option value="계약중">계약중</option>
+                                <option value="계약완료">계약완료</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">추천 업종</label>
+                            <input type="text" class="form-control" id="property-business" placeholder="예: 카페, 음식점, 서비스업">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">상세 설명</label>
+                        <div id="property-description-editor"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">이미지</label>
+                        <div class="file-upload-area" id="property-images-upload">
+                            <i class="fas fa-images"></i>
+                            <p>이미지를 드래그하거나 클릭해서 업로드하세요 (다중 선택 가능)</p>
+                            <input type="file" accept="image/*" multiple style="display: none;">
+                        </div>
+                        <div id="property-images-preview"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn--primary">저장</button>
+                        <button type="button" class="btn btn--outline" onclick="navigateToPage('properties')">취소</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- FAQ 게시판 관리 -->
+            <div id="page-faqs" class="page-content">
+                <div class="page-header">
+                    <h1>FAQ 게시판 관리</h1>
+                    <button class="btn btn--primary" onclick="showFaqForm()">
+                        <i class="fas fa-plus"></i>
+                        새 FAQ 작성
+                    </button>
+                </div>
+
+                <!-- 필터 및 검색 -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="filters">
+                            <div class="filter-row">
+                                <select class="form-control" id="faq-category-filter">
+                                    <option value="">카테고리 선택</option>
+                                    <option value="매매">매매</option>
+                                    <option value="창업">창업</option>
+                                    <option value="법률">법률</option>
+                                </select>
+                                <select class="form-control" id="faq-status-filter">
+                                    <option value="">공개 여부</option>
+                                    <option value="public">공개</option>
+                                    <option value="private">비공개</option>
+                                </select>
+                                <input type="text" class="form-control" id="faq-search" placeholder="검색어 입력">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 목록 -->
+                <div class="card">
+                    <div class="card__body">
+                        <div class="table-actions">
+                            <button class="btn btn--outline btn--sm" onclick="selectAllFaqs()">전체 선택</button>
+                            <button class="btn btn--warning btn--sm" onclick="bulkDeleteFaqs()">선택 삭제</button>
+                        </div>
+                        <div id="faqs-table"></div>
+                        <div id="faqs-pagination" class="pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ 등록/편집 폼 -->
+            <div id="page-faq-form" class="page-content">
+                <div class="page-header">
+                    <h1 id="faq-form-title">새 FAQ 작성</h1>
+                    <button class="btn btn--outline" onclick="navigateToPage('faqs')">목록으로</button>
+                </div>
+
+                <form id="faq-form" class="faq-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">제목 *</label>
+                            <input type="text" class="form-control" id="faq-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">카테고리 *</label>
+                            <select class="form-control" id="faq-category" required>
+                                <option value="">선택하세요</option>
+                                <option value="매매">매매</option>
+                                <option value="창업">창업</option>
+                                <option value="법률">법률</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">공개 설정</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="faq-privacy" value="public" checked> 공개
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="faq-privacy" value="private"> 비공개
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="faq-password-group" style="display: none;">
+                        <label class="form-label">비밀번호</label>
+                        <input type="password" class="form-control" id="faq-password">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="faq-fixed"> 상단 고정
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">질문 내용 *</label>
+                        <div id="faq-question-editor"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">답변 내용 *</label>
+                        <div id="faq-answer-editor"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn--primary">저장</button>
+                        <button type="button" class="btn btn--outline" onclick="navigateToPage('faqs')">취소</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 빠른상담 관리 -->
+            <div id="page-inquiries" class="page-content">
+                <div class="page-header">
+                    <h1>빠른상담 관리</h1>
+                </div>
+
+                <!-- 상태별 탭 -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-status="all">전체</button>
+                    <button class="tab-btn" data-status="신규">신규</button>
+                    <button class="tab-btn" data-status="진행중">진행중</button>
+                    <button class="tab-btn" data-status="완료">완료</button>
+                </div>
+
+                <!-- 문의 목록 -->
+                <div class="card">
+                    <div class="card__body">
+                        <div id="inquiries-table"></div>
+                        <div id="inquiries-pagination" class="pagination"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 문의 상세/답변 페이지 -->
+            <div id="page-inquiry-detail" class="page-content">
+                <div class="page-header">
+                    <h1>문의 상세 및 답변</h1>
+                    <button class="btn btn--outline" onclick="navigateToPage('inquiries')">목록으로</button>
+                </div>
+
+                <div class="inquiry-detail">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>문의 정보</h3>
+                            <div class="inquiry-info">
+                                <div class="info-row">
+                                    <label>문의자명:</label>
+                                    <span id="inquiry-name"></span>
+                                </div>
+                                <div class="info-row">
+                                    <label>연락처:</label>
+                                    <span id="inquiry-phone"></span>
+                                </div>
+                                <div class="info-row">
+                                    <label>등록일:</label>
+                                    <span id="inquiry-date"></span>
+                                </div>
+                            </div>
+
+                            <h4>문의 내용</h4>
+                            <div class="inquiry-content" id="inquiry-content"></div>
+                        </div>
+                    </div>
+
+                    <form id="inquiry-response-form">
+                        <div class="card">
+                            <div class="card__body">
+                                <h3>답변 작성</h3>
+                                <div id="inquiry-answer-editor"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">상태 변경</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="inquiry-status" value="신규"> 신규
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="inquiry-status" value="진행중"> 진행중
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="inquiry-status" value="완료"> 완료
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">내부 메모</label>
+                                <textarea class="form-control" id="inquiry-memo" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn--primary">저장</button>
+                            <button type="button" class="btn btn--outline" onclick="navigateToPage('inquiries')">목록</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- External JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+</body>
+</html>
