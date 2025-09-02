@@ -767,12 +767,26 @@ select.form-control {
 .header__logo a {
   color: var(--color-primary);
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
 }
 
 .header__logo a:hover,
 .header__logo a:focus {
   color: var(--color-primary-hover);
 }
+
+.header__logo-img {
+  width: 30px;
+  height: 30px;
+  fill: currentColor;
+}
+/*Text inherits styles from h1
+.header__logo-text {
+}
+ */
+
 
 .header__mobile-toggle {
   display: none;
