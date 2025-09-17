@@ -212,6 +212,15 @@ const AppState = {
             csPhone: "",
             csEmail: "",
             csHours: ""
+        },
+        businessCategories: {
+            "휴게점": ["중형커피점", "대형커피점", "테이크아웃", "아이스크림", "기타", "제과점"],
+            "음식점": ["김밥전문점", "일식", "패스트푸드", "일반식당", "분식점", "한식", "기타", "레스토랑", "고기전문점"],
+            "주류점": ["일반주점", "치킨호프", "이자까야", "맥주전문점", "기타", "와인바", "Bar", "단란주점", "유흥주점", "노래주점"],
+            "판매·서비스": ["판매점", "쥬얼리", "화장품", "편의점", "패션잡화", "유명의류", "판매기타", "미용실", "피부관리", "세차장", "서비스기타"],
+            "오락·스포츠": ["스크린골프", "노래방", "당구장", "PC방", "휘트니스", "기타"],
+            "특수상권": ["대형건물", "대형마트", "백화점", "영화관", "대형쇼핑몰", "기타"],
+            "무점포·기타": ["공실", "기타"]
         }
     },
     filters: {
@@ -333,6 +342,31 @@ function setupFormEventListeners() {
 
     // 파일 업로드
     setupFileUploads();
+
+    // 업종 선택
+    const categorySelect = document.getElementById('property-category');
+    if (categorySelect) {
+        categorySelect.addEventListener('change', handleCategoryChange);
+    }
+}
+
+function handleCategoryChange(e) {
+    const category = e.target.value;
+    const subcategorySelect = document.getElementById('property-subcategory');
+    
+    if (!subcategorySelect) return;
+
+    subcategorySelect.innerHTML = '<option value="">상세 업종을 선택하세요</option>';
+
+    if (category && AppState.data.businessCategories[category]) {
+        const subcategories = AppState.data.businessCategories[category];
+        subcategories.forEach(subcategory => {
+            const option = document.createElement('option');
+            option.value = subcategory;
+            option.textContent = subcategory;
+            subcategorySelect.appendChild(option);
+        });
+    }
 }
 
 // 페이지 네비게이션 (수정됨)
@@ -796,7 +830,6 @@ function renderPropertyForm(id = null) {
                 'monthly-profit': property.monthlyProfit,
                 'startup-cost': property.startupCost,
                 'property-status': property.status,
-                'property-business': property.businessType
             };
 
             Object.keys(fields).forEach(id => {
@@ -805,8 +838,24 @@ function renderPropertyForm(id = null) {
                     element.value = fields[id];
                 }
             });
+
+            if (property.businessType) {
+                const [category, subcategory] = property.businessType.split(', ');
+                const categorySelect = document.getElementById('property-category');
+                const subcategorySelect = document.getElementById('property-subcategory');
+
+                if (categorySelect) {
+                    categorySelect.value = category;
+                    handleCategoryChange({ target: categorySelect }); 
+                }
+                if (subcategorySelect && subcategory) {
+                    subcategorySelect.value = subcategory;
+                }
+            }
+
         } else {
             form.reset();
+            handleCategoryChange({ target: { value: '' } });
         }
     }
 
@@ -1496,7 +1545,7 @@ function handlePropertyFormSubmit(e) {
         monthlyProfit: parseInt(document.getElementById('monthly-profit').value),
         startupCost: parseInt(document.getElementById('startup-cost').value) || 0,
         status: document.getElementById('property-status').value,
-        businessType: document.getElementById('property-business').value,
+        businessType: `${document.getElementById('property-category').value}, ${document.getElementById('property-subcategory').value}`,
         description: AppState.editors.propertyDescription?.root.innerHTML || '',
         image: '/api/placeholder/150/100' // 실제로는 업로드된 이미지 URL
     };
