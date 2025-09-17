@@ -11,10 +11,9 @@ const AppState = {
                 id: 1,
                 title: "홍대입구역 인근 음식점",
                 location: "서울 마포구 홍대입구역",
-                rent: 300,
-                deposit: 5000,
-                area: 33,
-                keyMoney: 1500,
+                monthlyRevenue: 300,
+                monthlyProfit: 5000,
+                startupCost: 1500,
                 status: "매물",
                 businessType: "한식, 카페, 치킨",
                 description: "홍대 핫플레이스 위치, 유동인구 많음",
@@ -26,10 +25,9 @@ const AppState = {
                 id: 2,
                 title: "강남역 오피스텔 상가",
                 location: "서울 강남구 강남역",
-                rent: 500,
-                deposit: 10000,
-                area: 66,
-                keyMoney: 3000,
+                monthlyRevenue: 500,
+                monthlyProfit: 10000,
+                startupCost: 3000,
                 status: "계약중",
                 businessType: "카페, 의료업, 서비스업",
                 description: "강남 핵심상권, 직장인 타겟 최적",
@@ -41,10 +39,9 @@ const AppState = {
                 id: 3,
                 title: "신촌 대학가 매장",
                 location: "서울 서대문구 신촌",
-                rent: 250,
-                deposit: 3000,
-                area: 50,
-                keyMoney: 800,
+                monthlyRevenue: 250,
+                monthlyProfit: 3000,
+                startupCost: 800,
                 status: "매물",
                 businessType: "치킨, 카페, 분식",
                 description: "대학생 고객층, 접근성 우수",
@@ -56,10 +53,9 @@ const AppState = {
                 id: 4,
                 title: "이태원 글로벌 매장",
                 location: "서울 용산구 이태원",
-                rent: 400,
-                deposit: 8000,
-                area: 45,
-                keyMoney: 2000,
+                monthlyRevenue: 400,
+                monthlyProfit: 8000,
+                startupCost: 2000,
                 status: "매물",
                 businessType: "레스토랑, 바, 카페",
                 description: "외국인 관광객 다수, 야간영업 유리",
@@ -71,10 +67,9 @@ const AppState = {
                 id: 5,
                 title: "건대입구 상권",
                 location: "서울 광진구 건대입구",
-                rent: 280,
-                deposit: 4000,
-                area: 38,
-                keyMoney: 1200,
+                monthlyRevenue: 280,
+                monthlyProfit: 4000,
+                startupCost: 1200,
                 status: "계약완료",
                 businessType: "치킨, 피자, 분식",
                 description: "대학생 밀집지역, 배달 주문 많음",
@@ -711,8 +706,8 @@ function renderPropertiesTable() {
                     <th>썸네일</th>
                     <th>제목</th>
                     <th>위치</th>
-                    <th>임대료</th>
-                    <th>보증금</th>
+                    <th>월 매출</th>
+                    <th>월 순이익</th>
                     <th>상태</th>
                     <th>등록일</th>
                     <th>액션</th>
@@ -729,8 +724,8 @@ function renderPropertiesTable() {
                         </td>
                         <td>${item.title}</td>
                         <td>${item.location}</td>
-                        <td>${item.rent}만원</td>
-                        <td>${item.deposit}만원</td>
+                        <td>${item.monthlyRevenue}만원</td>
+                        <td>${item.monthlyProfit}만원</td>
                         <td><span class="status-badge status-${getStatusClass(item.status)}">${item.status}</span></td>
                         <td>${item.createdAt}</td>
                         <td>
@@ -797,10 +792,9 @@ function renderPropertyForm(id = null) {
             const fields = {
                 'property-title': property.title,
                 'property-location': property.location,
-                'property-rent': property.rent,
-                'property-deposit': property.deposit,
-                'property-area': property.area,
-                'property-keymoney': property.keyMoney,
+                'monthly-revenue': property.monthlyRevenue,
+                'monthly-profit': property.monthlyProfit,
+                'startup-cost': property.startupCost,
                 'property-status': property.status,
                 'property-business': property.businessType
             };
@@ -1498,10 +1492,9 @@ function handlePropertyFormSubmit(e) {
     const formData = {
         title: document.getElementById('property-title').value,
         location: document.getElementById('property-location').value,
-        rent: parseInt(document.getElementById('property-rent').value),
-        deposit: parseInt(document.getElementById('property-deposit').value),
-        area: parseInt(document.getElementById('property-area').value),
-        keyMoney: parseInt(document.getElementById('property-keymoney').value) || 0,
+        monthlyRevenue: parseInt(document.getElementById('monthly-revenue').value),
+        monthlyProfit: parseInt(document.getElementById('monthly-profit').value),
+        startupCost: parseInt(document.getElementById('startup-cost').value) || 0,
         status: document.getElementById('property-status').value,
         businessType: document.getElementById('property-business').value,
         description: AppState.editors.propertyDescription?.root.innerHTML || '',
@@ -1509,7 +1502,7 @@ function handlePropertyFormSubmit(e) {
     };
 
     // 유효성 검사
-    if (!formData.title || !formData.location || !formData.rent || !formData.deposit || !formData.area) {
+    if (!formData.title || !formData.location || !formData.monthlyRevenue || !formData.monthlyProfit) {
         showToast('필수 항목을 모두 입력해주세요.', 'error');
         return;
     }
