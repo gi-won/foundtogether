@@ -156,7 +156,7 @@ function createDetailInfo(property) {
 
     const locationSectionHtml = `
             <section class="product-details__section product-details__section--location" aria-labelledby="product-details-location-title">
-              ${renderSectionHeading('입지', locationHelperHtml).replace('class="product-details__section-title"', 'id="product-details-location-title" class="product-details__section-title"')}
+              ${renderSectionHeading('입지', locationHelperHtml, 'product-details-location-title')}
               <div class="product-details__content">
                 ${locationCardContent}
               </div>

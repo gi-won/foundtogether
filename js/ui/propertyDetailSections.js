@@ -15,11 +15,12 @@ export function renderMetricsGrid(items, extraClasses = '') {
   `;
 }
 
-export function renderSectionHeading(title, helperHtml = '') {
+export function renderSectionHeading(title, helperHtml = '', id = '') {
   const helper = helperHtml ? `<span class="product-card__helper product-details__location-helper-inline">${helperHtml}</span>` : '';
+  const idAttr = id ? ` id="${id}"` : '';
   return `
     <div class="product-details__section-heading">
-      <h4 class="product-details__section-title">${title}</h4>
+      <h4${idAttr} class="product-details__section-title">${title}</h4>
       ${helper}
     </div>
   `;
