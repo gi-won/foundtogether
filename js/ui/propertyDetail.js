@@ -1,6 +1,7 @@
 // propertyDetail.js - 매물 상세 UI 모듈
 import { CONSTANTS, formatCurrency, formatDate, getStatusConfig } from '../utils.js';
 import { appState } from '../state.js';
+import { renderMetricsGrid, renderSectionHeading } from './propertyDetailSections.js';
 
 /**
  * 매물 상세 페이지의 헤더 HTML을 생성합니다.
@@ -123,17 +124,7 @@ function createDetailInfo(property) {
         { label: "창업 비용", value: formatCurrency(property.startupCost) }
     ].filter(item => item.value && item.value !== "-");
 
-    const metricsCardContent = highlightData.length
-        ? `<div class="product-details__metrics-grid">
-              ${highlightData.map(item => `
-                <div class="product-details__metric-item">
-                  <span class="product-details__metric-label">${item.label}</span>
-                  <span class="product-details__metric-value">${item.value}</span>
-                </div>
-              `).join("")}
-           </div>`
-        : `<p class="product-card__empty">투자 지표가 준비 중입니다.</p>`;
-
+    const metricsCardContent = renderMetricsGrid(highlightData);
     const metricsSectionHtml = `
             <section class="product-details__section" aria-labelledby="product-details-metrics-title">
               <h4 id="product-details-metrics-title" class="product-details__section-title">투자 지표</h4>
@@ -148,17 +139,7 @@ function createDetailInfo(property) {
     if (property.franchise) businessMetrics.push({ label: '프랜차이즈', value: property.franchise });
     if (property.size) businessMetrics.push({ label: '면적', value: property.size });
 
-    const businessCardContent = businessMetrics.length
-        ? `<div class="product-details__metrics-grid product-details__business-metrics">
-              ${businessMetrics.map(item => `
-                <div class="product-details__metric-item">
-                  <span class="product-details__metric-label">${item.label}</span>
-                  <span class="product-details__metric-value">${item.value}</span>
-                </div>
-              `).join('')}
-           </div>`
-        : `<p class="product-card__empty">사업 정보가 준비 중입니다.</p>`;
-
+    const businessCardContent = renderMetricsGrid(businessMetrics, 'product-details__business-metrics');
     const businessSectionHtml = `
             <section class="product-details__section" aria-labelledby="product-details-business-title">
               <h4 id="product-details-business-title" class="product-details__section-title">사업 정보</h4>
@@ -167,24 +148,15 @@ function createDetailInfo(property) {
           `;
 
    const locationCardContent = property.location
-      ? `
-        <div class="product-details__metrics-grid product-details__location-metrics">
-          <div class="product-details__metric-item">
-           <span class="product-details__metric-label">위치</span>
-           <span class="product-details__metric-value">${property.location}</span>
-          </div>
-        </div>`
+      ? renderMetricsGrid([{ label: '위치', value: property.location }], 'product-details__location-metrics')
       : `<p class="product-card__empty">위치 정보가 준비 중입니다.</p>`;
 
     // registration is shown inside the '주요 정보' card header now
-    const locationHelperHtml = property.location ? `<span class="product-card__helper product-details__location-helper-inline">정확한 주소는 상담 시 안내해 드립니다.</span>` : '';
+    const locationHelperHtml = property.location ? '정확한 주소는 상담 시 안내해 드립니다.' : '';
 
     const locationSectionHtml = `
             <section class="product-details__section product-details__section--location" aria-labelledby="product-details-location-title">
-              <div class="product-details__section-heading">
-                <h4 id="product-details-location-title" class="product-details__section-title">입지</h4>
-                ${locationHelperHtml}
-              </div>
+              ${renderSectionHeading('입지', locationHelperHtml).replace('class="product-details__section-title"', 'id="product-details-location-title" class="product-details__section-title"')}
               <div class="product-details__content">
                 ${locationCardContent}
               </div>
