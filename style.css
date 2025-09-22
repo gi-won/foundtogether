@@ -2103,6 +2103,176 @@ button:focus-visible,
   margin-bottom: var(--space-24);
 }
 
+/* Upgraded styles for property detail - 주요 정보 */
+.product-card--details {
+  padding: var(--space-20);
+}
+
+.product-card__content-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20); /* larger vertical spacing between sections inside 주요 정보 */
+}
+
+/* Title row inside details card: title left, small registered date right */
+.product-card__title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+  margin-bottom: var(--space-8);
+}
+
+.product-card__registered {
+  font-size: 12px; /* small and subtle */
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+}
+
+.product-details__metrics-grid {
+  display: grid;
+  /* narrower card columns but responsive */
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-20); /* more breathing room */
+  justify-content: start; /* left-align the grid when fewer columns */
+}
+
+/* For business metrics on desktop: make the grid shrink-to-fit to content and left-align */
+@media (min-width: 641px) {
+  .product-details__metrics-grid.product-details__business-metrics {
+    display: inline-grid; /* shrink-to-fit the grid to its children */
+    grid-template-columns: repeat(auto-fill, minmax(160px, max-content));
+    gap: var(--space-20);
+    justify-content: start;
+    align-items: start;
+  }
+}
+
+@media (max-width: 1024px) {
+  .product-details__metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .product-details__metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.product-details__metric-item {
+  background: rgba(var(--color-teal-500-rgb), 0.03);
+  padding: var(--space-16);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  align-items: center; /* center horizontally */
+  text-align: center; /* center text inside */
+  min-width: 160px; /* ensure a sensible minimum width */
+  max-width: 260px; /* reduce visual width of each card */
+  margin: 0; /* no auto centering; align left within grid */
+}
+
+.product-details__metric-value {
+  font-size: 16px; /* slightly smaller to fit */
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.product-details__metric-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.product-details__business-info {
+  display: grid;
+  gap: var(--space-8);
+}
+
+/* Row to place business and location side-by-side */
+.product-details__row {
+  display: flex;
+  gap: var(--space-16);
+  align-items: flex-start;
+}
+
+.product-details__section--location {
+  /* allow location card to sit to the right of business cards */
+  flex: 0 0 280px; /* default right column width */
+}
+
+.product-details__business-metrics {
+  flex: 1 1 auto; /* let business metrics take remaining width */
+}
+
+@media (max-width: 1024px) {
+  .product-details__row {
+    flex-direction: column;
+  }
+  .product-details__section--location {
+    flex: none;
+    width: 100%;
+  }
+  .product-details__business-metrics {
+    width: 100%;
+  }
+}
+
+/* Desktop: push location section to the far right of the row */
+@media (min-width: 1025px) {
+  .product-details__section--location {
+    margin-left: auto;
+  }
+}
+
+/* Desktop: split business and location into two equal columns */
+@media (min-width: 1025px) {
+  .product-details__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* two equal columns */
+    gap: var(--space-16);
+    align-items: start;
+  }
+  /* reset previous flex-based sizing for grid context */
+  .product-details__section--location {
+    margin-left: 0;
+    flex: none;
+    width: auto;
+  }
+  .product-details__business-metrics {
+    width: 100%;
+  }
+}
+
+.product-details__business-item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.product-details__business-label {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.product-details__business-value {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.product-details__map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--color-primary);
+}
+
+.product-details__map-link .icon-map {
+  font-size: 16px;
+}
+
 .detail-layout__aside {
   display: grid;
   gap: var(--space-24);
@@ -2113,10 +2283,90 @@ button:focus-visible,
   gap: var(--space-8);
 }
 
+/* Business cards in detail view */
+.product-details__business-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.product-details__business-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-xs);
+}
+
+.product-details__business-card-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Registration date shown at header top-right */
+.product-detail__header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.product-detail__registered {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Remove explicit map link styles since link is removed in template */
+.product-details__map-link {
+  display: none;
+}
+
 .product-details__section-title {
   margin: 0;
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-semibold);
+}
+
+/* Inline helper next to section title (입지 오른쪽 도움말) */
+.product-details__section-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  justify-content: flex-start;
+  position: relative; /* allow absolute positioning of helper on desktop */
+}
+.product-details__location-helper-inline {
+  margin-left: var(--space-12);
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+@media (max-width: 1024px) {
+  .product-details__section-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-8);
+  }
+  .product-details__location-helper-inline {
+    margin-left: 0;
+  }
+}
+
+/* Desktop: align helper's right edge to the card's inner padding */
+@media (min-width: 1025px) {
+  .product-details__location-helper-inline {
+    position: absolute;
+    right: var(--space-24); /* matches .product-card padding */
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+    text-align: right;
+    max-width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .product-details__content {
@@ -2463,6 +2713,21 @@ button:focus-visible,
 
   .product-summary__price-value {
     font-size: var(--font-size-2xl);
+  }
+}
+
+@media (max-width: 640px) {
+  .product-details__metrics-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-12);
+  }
+  .product-details__metric-item {
+    max-width: 100%;
+    min-width: 0;
+    padding: var(--space-12);
+  }
+  .product-details__metric-value {
+    font-size: var(--font-size-lg);
   }
 }
 

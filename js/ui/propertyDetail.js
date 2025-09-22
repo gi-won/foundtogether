@@ -10,7 +10,10 @@ import { appState } from '../state.js';
 function renderPropertyHeader(property) {
     return `
         <header class="product-detail__header">
-          <h2 id="property-detail-title" class="product-detail__title">${property.title}</h2>
+          <div class="product-detail__header-row">
+            <h2 id="property-detail-title" class="product-detail__title">${property.title}</h2>
+            ${property.createdAt ? `<time class="product-detail__registered" datetime="${new Date(property.createdAt).toISOString()}">${formatDate(property.createdAt)}</time>` : ''}
+          </div>
           <p class="product-detail__location">${property.location || ""}</p>
         </header>
     `;
@@ -132,60 +135,74 @@ function createDetailInfo(property) {
         : `<p class="product-card__empty">투자 지표가 준비 중입니다.</p>`;
 
     const metricsSectionHtml = `
-            <section class="product-details__section">
-              <h4 class="product-details__section-title">투자 지표</h4>
+            <section class="product-details__section" aria-labelledby="product-details-metrics-title">
+              <h4 id="product-details-metrics-title" class="product-details__section-title">투자 지표</h4>
               ${metricsCardContent}
             </section>
           `;
 
-    const businessMetaHtml = [
-        property.businessCategory ? `<div class="product-details__business-item"><span class="product-details__business-label">업종</span><span class="product-details__business-value">${property.businessCategory}</span></div>` : "",
-        property.businessSubcategory ? `<div class="product-details__business-item"><span class="product-details__business-label">세부 업종</span><span class="product-details__business-value">${property.businessSubcategory}</span></div>` : ""
-    ].filter(Boolean).join("");
+    // Render business information as metric cards (like investment metrics)
+    const businessMetrics = [];
+    if (property.businessCategory) businessMetrics.push({ label: '업종', value: property.businessCategory });
+    if (property.businessSubcategory) businessMetrics.push({ label: '세부 업종', value: property.businessSubcategory });
+    if (property.franchise) businessMetrics.push({ label: '프랜차이즈', value: property.franchise });
+    if (property.size) businessMetrics.push({ label: '면적', value: property.size });
+
+    const businessCardContent = businessMetrics.length
+        ? `<div class="product-details__metrics-grid product-details__business-metrics">
+              ${businessMetrics.map(item => `
+                <div class="product-details__metric-item">
+                  <span class="product-details__metric-label">${item.label}</span>
+                  <span class="product-details__metric-value">${item.value}</span>
+                </div>
+              `).join('')}
+           </div>`
+        : `<p class="product-card__empty">사업 정보가 준비 중입니다.</p>`;
 
     const businessSectionHtml = `
-            <section class="product-details__section">
-              <h4 class="product-details__section-title">사업 정보</h4>
-              ${businessMetaHtml ? `<div class="product-details__business-info">${businessMetaHtml}</div>` : `<p class="product-card__empty">사업 정보가 준비 중입니다.</p>`}
+            <section class="product-details__section" aria-labelledby="product-details-business-title">
+              <h4 id="product-details-business-title" class="product-details__section-title">사업 정보</h4>
+              ${businessCardContent}
             </section>
           `;
 
-    const mapUrl = property.location ? `https://map.kakao.com/?q=${encodeURIComponent(property.location)}` : '#';
-    const locationDetailsHtml = property.location
-        ? `
-                <div class="product-details__location-text">
-                  <p class="product-card__text"><strong>위치</strong> ${property.location}</p>
-                  <p class="product-card__helper">정확한 주소는 상담 시 안내해 드립니다.</p>
-                </div>
-                <a class="product-card__link product-details__map-link" href="${mapUrl}" target="_blank" rel="noopener">
-                  <span class="icon-map" aria-hidden="true">📍</span> 지도에서 살펴보기
-                </a>
-              `
-        : `<p class="product-card__empty">위치 정보가 준비 중입니다.</p>`;
+   const locationCardContent = property.location
+      ? `
+        <div class="product-details__metrics-grid product-details__location-metrics">
+          <div class="product-details__metric-item">
+           <span class="product-details__metric-label">위치</span>
+           <span class="product-details__metric-value">${property.location}</span>
+          </div>
+        </div>`
+      : `<p class="product-card__empty">위치 정보가 준비 중입니다.</p>`;
 
-    const registrationListHtml = property.createdAt
-        ? `<ul class="product-meta product-meta--columns">
-              <li><span class="product-meta__label">등록일</span><span class="product-meta__value">${formatDate(property.createdAt)}</span></li>
-            </ul>`
-        : '';
+    // registration is shown inside the '주요 정보' card header now
+    const locationHelperHtml = property.location ? `<span class="product-card__helper product-details__location-helper-inline">정확한 주소는 상담 시 안내해 드립니다.</span>` : '';
 
     const locationSectionHtml = `
-            <section class="product-details__section">
-              <h4 class="product-details__section-title">입지 & 일정</h4>
+            <section class="product-details__section product-details__section--location" aria-labelledby="product-details-location-title">
+              <div class="product-details__section-heading">
+                <h4 id="product-details-location-title" class="product-details__section-title">입지</h4>
+                ${locationHelperHtml}
+              </div>
               <div class="product-details__content">
-                ${locationDetailsHtml}
-                ${registrationListHtml}
+                ${locationCardContent}
               </div>
             </section>
           `;
 
     return `
             <article class="product-card product-card--details">
-              <h3 class="product-card__title">주요 정보</h3>
+              <div class="product-card__title-row">
+                <h3 class="product-card__title">주요 정보</h3>
+                ${property.createdAt ? `<time class="product-card__registered" datetime="${new Date(property.createdAt).toISOString()}">${formatDate(property.createdAt)}</time>` : ''}
+              </div>
               <div class="product-card__content-group">
                 ${metricsSectionHtml}
-                ${businessSectionHtml}
-                ${locationSectionHtml}
+                <div class="product-details__row">
+                  ${businessSectionHtml}
+                  ${locationSectionHtml}
+                </div>
               </div>
             </article>
           `;
