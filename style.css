@@ -931,7 +931,7 @@ select.form-control {
 .properties__grid,
 .properties__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* desktop: 3 columns */
   gap: var(--space-24);
 }
 
@@ -942,6 +942,10 @@ select.form-control {
   overflow: hidden;
   transition: transform var(--duration-normal) var(--ease-standard);
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-16);
 }
 
 .property-card:hover {
@@ -958,6 +962,7 @@ select.form-control {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  margin-bottom: var(--space-12);
 }
 
 .property-card__image img {
@@ -980,18 +985,85 @@ select.form-control {
 }
 
 .property-card__content {
-  padding: var(--space-16);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+@media (max-width: 1024px) {
+  .properties__grid,
+  .properties__list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-16);
+  }
+  .property-card {
+    padding: var(--space-12);
+  }
+}
+
+@media (max-width: 640px) {
+  .properties__grid,
+  .properties__list {
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+  .property-card {
+    padding: var(--space-10);
+  }
+  .property-card__financials .financials__sub {
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+}
+
+/* 상하 가운데 정렬만 추가 */
+.property-card__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-8);
+  margin-bottom: var(--space-4);
 }
 
 .property-card__title {
   font-size: var(--font-size-lg);
-  margin-bottom: var(--space-8);
+  margin-bottom: 0;
+  margin-top: var(--space-6);
   color: var(--color-text);
+  flex-grow: 1;
 }
 
 .property-card__location {
   color: var(--color-text-secondary);
   margin-bottom: var(--space-12);
+}
+
+.property-card__meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.property-card__tags {
+  margin: 0;
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .property-card__meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-6);
+  }
+  .property-card__tags {
+    order: 2;
+  }
 }
 
 .property-card__details {
@@ -1050,10 +1122,11 @@ select.form-control {
   display: inline-flex;
   align-items: center;
   padding: var(--space-4) var(--space-8);
-  margin-top: var(--space-12);
+  margin-top: 0;
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
+  flex-shrink: 0;
 }
 
 .property-card__status--available {
@@ -1089,6 +1162,12 @@ select.form-control {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--space-16);
   margin-bottom: var(--space-20);
+}
+
+/* Center the apply filters button inside the filters area */
+.properties__filters [data-action="apply-filters"] {
+  display: block; /* allow margin auto to center */
+  margin: 0 auto;
 }
 
 /* Reviews Grid */
@@ -2125,6 +2204,82 @@ button:focus-visible,
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+/* Property card financials: group 창업비용, 월매출, 월 순이익 into a single mini-card */
+.property-card__financials {
+  border: 1px solid var(--color-card-border);
+  background: rgba(var(--color-teal-500-rgb), 0.03);
+  /* increase vertical padding: larger top/bottom and moderate left/right */
+  padding: var(--space-12);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: row; /* horizontal layout on desktop */
+  gap: var(--space-8); /* slightly more breathing room horizontally */
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  /* provide a comfortable vertical minimum so cards don't feel cramped */
+  min-height: 56px;
+}
+
+.property-card__financials .financials__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3); /* slightly larger vertical gap between label and value */
+  min-width: 0; /* allow truncation */
+}
+
+.property-card__financials .financials__label {
+  font-size: 11px; /* smaller label */
+  color: var(--color-text-secondary);
+}
+
+.property-card__financials .financials__value {
+  font-size: 15px; /* reduced to help fit in one line */
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.property-card__financials .financials__sub {
+  display: flex;
+  gap: var(--space-12); /* increased gap between monthly revenue and monthly profit */
+  align-items: baseline;
+  min-width: 0;
+}
+
+.property-card__financials .financials__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.property-card__financials .financials__value--sub {
+  font-size: 13px; /* modestly smaller */
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .property-card__financials {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-8); /* increase vertical breathing on mobile */
+    padding: var(--space-10) var(--space-6); /* slightly smaller than desktop but larger than before */
+  }
+  .property-card__financials .financials__sub {
+    width: 100%;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
 }
 
 .product-summary__price-label {

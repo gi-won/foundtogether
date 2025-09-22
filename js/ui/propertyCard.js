@@ -12,17 +12,24 @@ import { showPropertyDetail } from "./propertyDetail.js";
  */
 export function createPropertyCard(property, isLinkToPage) {
   const statusConfig = getStatusConfig(property.status);
-  const metrics = [
-    { label: '월 매출', value: formatCurrency(property.monthlyRevenue) },
-    { label: '월 순이익', value: formatCurrency(property.monthlyProfit) },
-    { label: '창업 비용', value: formatCurrency(property.startupCost) }
-  ];
-  const metricsHtml = metrics.map(metric => `
-    <div class="property-card__detail">
-      <span class="property-card__detail-label">${metric.label}</span>
-      <span class="property-card__detail-value">${metric.value}</span>
+  const financialsHtml = `
+    <div class="property-card__financials">
+        <div class="financials__main">
+            <span class="financials__label">창업 비용</span>
+            <span class="financials__value">${formatCurrency(property.startupCost)}</span>
+        </div>
+        <div class="financials__sub">
+            <div class="financials__item">
+                <span class="financials__label">월 매출</span>
+                <span class="financials__value--sub">${formatCurrency(property.monthlyRevenue)}</span>
+            </div>
+            <div class="financials__item">
+                <span class="financials__label">월 순이익</span>
+                <span class="financials__value--sub">${formatCurrency(property.monthlyProfit)}</span>
+            </div>
+        </div>
     </div>
-  `).join('');
+  `;
   const businessTags = [property.businessCategory, property.businessSubcategory].filter(Boolean);
   const imageUrl = property.images && property.images.length > 0 ? property.images[0] : '';
   const cardContent = `
@@ -31,15 +38,15 @@ export function createPropertyCard(property, isLinkToPage) {
       ${imageUrl ? '' : '<span class="placeholder-text">이미지를 불러오는 중입니다...</span>'}
     </div>
     <div class="property-card__content">
-      <h3 class="property-card__title">${property.title}</h3>
-      <p class="property-card__location">${property.location}</p>
-      <div class="property-card__details">
-        ${metricsHtml}
+      <div class="property-card__header">
+        <h3 class="property-card__title">${property.title}</h3>
+        <span class="property-card__status property-card__status--${statusConfig.className}">${statusConfig.label}</span>
       </div>
-      ${businessTags.length ? `<div class="property-card__tags">${businessTags.map(tag => `<span class="product-detail__tag">${tag}</span>`).join("")}</div>` : ''}
-      <span class="property-card__status property-card__status--${statusConfig.className}">
-        ${statusConfig.label}
-      </span>
+      <div class="property-card__meta-row">
+        <p class="property-card__location">${property.location}</p>
+        ${businessTags.length ? `<div class="property-card__tags">${businessTags.map(tag => `<span class="product-detail__tag">${tag}</span>`).join("")}</div>` : ''}
+      </div>
+      ${financialsHtml}
     </div>
   `;
   if (isLinkToPage) {

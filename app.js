@@ -304,6 +304,28 @@ function checkStartupCostRange(cost, range) {
 }
 
 /**
+ * Populates the main business category filter dropdown from the application state.
+ */
+function populateCategoryFilters() {
+    const categoryFilter = document.getElementById('category-filter');
+    if (!categoryFilter) return;
+
+    // Clear existing options except the first one ("전체")
+    while (categoryFilter.options.length > 1) {
+        categoryFilter.remove(1);
+    }
+
+    const categories = Object.keys(appState.businessCategoriesMap);
+    
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+}
+
+/**
  * 매물 목록 페이지의 필터 관련 이벤트 리스너를 설정합니다.
  */
 
@@ -318,6 +340,8 @@ function setupPropertyFilters() {
   const costFilter = document.getElementById('cost-filter');
 
   const searchInput = document.getElementById('search-input');
+
+  populateCategoryFilters(); // Populate main categories first
 
 
 
