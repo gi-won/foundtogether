@@ -4,6 +4,8 @@
 const AppState = {
     currentPage: 'dashboard',
     currentItemId: null,
+    isInitialized: false,
+    isLoggedIn: false,
     editors: {},
     data: {
         properties: [
@@ -235,13 +237,96 @@ const AppState = {
     }
 };
 
+function showLogin(options = {}) {
+    const { skipHistory = false, replaceState = false } = options;
+    const loginContainer = document.getElementById('admin-login');
+    const adminLayout = document.querySelector('.admin-layout');
+    if (!loginContainer || !adminLayout) {
+        return;
+    }
+
+    loginContainer.classList.remove('is-hidden');
+    adminLayout.classList.add('is-hidden');
+
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.reset();
+        const firstInput = loginForm.querySelector('input');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    }
+
+    AppState.isLoggedIn = false;
+
+    if (window.history && window.history.pushState) {
+        const state = { scope: 'admin', page: 'login' };
+        const url = '#login';
+
+        if (replaceState) {
+            window.history.replaceState(state, '', url);
+        } else if (!skipHistory) {
+            window.history.pushState(state, '', url);
+        }
+    }
+}
+
+function handleLogout() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sidebar) {
+        sidebar.classList.remove('open');
+    }
+    if (overlay) {
+        overlay.classList.remove('show');
+    }
+
+    AppState.currentPage = 'dashboard';
+    showLogin();
+}
+
 // DOM이 로드되면 초기화
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
+    const loginContainer = document.getElementById('admin-login');
+    const loginForm = document.getElementById('login-form');
+    const adminLayout = document.querySelector('.admin-layout');
+
+    if (loginContainer && loginForm && adminLayout) {
+        showLogin({ replaceState: true });
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            AppState.isLoggedIn = true;
+            loginContainer.classList.add('is-hidden');
+            adminLayout.classList.remove('is-hidden');
+
+            if (!AppState.isInitialized) {
+                initializeApp();
+            }
+
+            navigateToPage('dashboard');
+        });
+    } else {
+        AppState.isLoggedIn = true;
+
+        if (!AppState.isInitialized) {
+            initializeApp();
+        }
+
+        navigateToPage(AppState.currentPage, null, { skipHistory: true, replaceState: true });
+    }
 });
+
+window.addEventListener('popstate', handleAdminPopState);
 
 // 앱 초기화
 function initializeApp() {
+    if (AppState.isInitialized) {
+        return;
+    }
+
+    AppState.isInitialized = true;
     setupEventListeners();
     renderDashboard();
     initializePartnersSection();
@@ -258,27 +343,35 @@ function setupEventListeners() {
         });
     });
 
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogout();
+        });
+    }
+
     // 사이드바 토글
     const sidebarToggle = document.getElementById('sidebar-toggle');
     const sidebar = document.getElementById('sidebar');
-    
+
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', function() {
             sidebar.classList.toggle('open');
-            
-            // 오버레이 생성/제거
+
+            // 오버레이 생성/토글
             let overlay = document.querySelector('.sidebar-overlay');
             if (!overlay) {
                 overlay = document.createElement('div');
                 overlay.className = 'sidebar-overlay';
                 document.body.appendChild(overlay);
-                
+
                 overlay.addEventListener('click', function() {
                     sidebar.classList.remove('open');
                     overlay.classList.remove('show');
                 });
             }
-            
+
             overlay.classList.toggle('show', sidebar.classList.contains('open'));
         });
     }
@@ -286,6 +379,7 @@ function setupEventListeners() {
     // 폼 이벤트
     setupFormEventListeners();
 }
+
 
 // 폼 이벤트 리스너
 function setupFormEventListeners() {
@@ -370,10 +464,19 @@ function handleCategoryChange(e) {
 }
 
 // 페이지 네비게이션 (수정됨)
-function navigateToPage(page, action = null) {
-    console.log('Navigating to:', page, 'Action:', action); // 디버깅용
-    
-    // 이전 페이지 비활성화
+function navigateToPage(page, action = null, options = {}) {
+    const { skipHistory = false, replaceState = false } = options;
+    console.log('Navigating to:', page, 'Action:', action);
+
+    const loginContainer = document.getElementById('admin-login');
+    const adminLayout = document.querySelector('.admin-layout');
+    if (loginContainer && adminLayout) {
+        loginContainer.classList.add('is-hidden');
+        adminLayout.classList.remove('is-hidden');
+    }
+    AppState.isLoggedIn = true;
+
+    // 페이지 콘텐츠 비활성화
     document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
@@ -384,10 +487,10 @@ function navigateToPage(page, action = null) {
     const navLink = document.querySelector(`[data-page="${page}"]`);
     if (navLink) navLink.classList.add('active');
 
-    // 페이지 표시 및 렌더링
+    // 렌더링 대상 페이지
     let targetPage = page;
-    
-    // 특별한 액션 처리
+
+    // 특수한 액션 처리
     if (action === 'add') {
         if (page === 'properties') {
             targetPage = 'property-form';
@@ -402,9 +505,9 @@ function navigateToPage(page, action = null) {
     const pageElement = document.getElementById(`page-${targetPage}`);
     if (pageElement) {
         pageElement.classList.add('active');
-        console.log('Page activated:', targetPage); // 디버깅용
+        console.log('Page activated:', targetPage);
     } else {
-        console.error('Page not found:', targetPage); // 디버깅용
+        console.error('Page not found:', targetPage);
     }
 
     // 페이지별 렌더링
@@ -433,6 +536,47 @@ function navigateToPage(page, action = null) {
             renderInquiriesPage();
             break;
     }
+
+    if (window.history && window.history.pushState) {
+        const state = { scope: 'admin', page, action: action || null };
+        const url = action ? `#${page}:${action}` : `#${page}`;
+
+        if (replaceState) {
+            window.history.replaceState(state, '', url);
+        } else if (!skipHistory) {
+            window.history.pushState(state, '', url);
+        }
+    }
+}
+
+function handleAdminPopState(event) {
+    const state = event.state;
+    if (!state || state.scope !== 'admin') {
+        return;
+    }
+
+    if (state.page === 'login') {
+        showLogin({ skipHistory: true });
+        return;
+    }
+
+    if (!AppState.isLoggedIn) {
+        showLogin({ skipHistory: true, replaceState: true });
+        return;
+    }
+
+    if (!AppState.isInitialized) {
+        initializeApp();
+    }
+
+    const loginContainer = document.getElementById('admin-login');
+    const adminLayout = document.querySelector('.admin-layout');
+    if (loginContainer && adminLayout) {
+        loginContainer.classList.add('is-hidden');
+        adminLayout.classList.remove('is-hidden');
+    }
+
+    navigateToPage(state.page, state.action || null, { skipHistory: true });
 }
 
 // 대시보드 렌더링
@@ -1719,3 +1863,6 @@ function showLoadingSpinner(show) {
         spinner.classList.add('hidden');
     }
 }
+
+
+

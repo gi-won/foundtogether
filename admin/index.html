@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>올인원 점포·창업 플랫폼 관리자</title>
+    <title>더프차 관리자</title>
     
     <!-- External CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -44,7 +44,31 @@
     </div>
 
     <!-- 메인 레이아웃 -->
-    <div class="admin-layout">
+
+    <!-- Admin Login -->
+    <div id="admin-login" class="admin-login">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>더프차 관리자 로그인</h1>
+                <img src="../imgs/thefcha_vertical_logo.svg" alt="The FCHA Logo" style="width: 100px; margin: 20px auto; display: block;">
+                <p>로그인 정보를 입력해 관리자에 접속하세요.</p>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-id">아이디</label>
+                    <input id="login-id" name="login-id" type="text" class="form-control" placeholder="아이디" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">비밀번호</label>
+                    <input id="login-password" name="login-password" type="password" class="form-control" placeholder="비밀번호" autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width">로그인</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout is-hidden">
         <!-- 헤더 -->
         <header class="admin-header">
             <div class="header-left">
@@ -61,7 +85,7 @@
                     <i class="fas fa-user-circle"></i>
                     <span>관리자</span>
                 </div>
-                <button class="btn btn--outline btn--sm">
+                <button id="logout-button" class="btn btn--outline btn--sm">
                     <i class="fas fa-sign-out-alt"></i>
                     로그아웃
                 </button>
@@ -416,13 +440,7 @@
                                 <option value="">업종을 먼저 선택하세요</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">상세 업종</label>
-                            <select class="form-control" id="property-subcategory">
-                                <option value="">업종을 먼저 선택하세요</option>
-                            </select>
-                        </div>
-                    </div>
+         </div>
 
                     <div class="form-group">
                         <label class="form-label">상세 설명</label>

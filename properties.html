@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>창업물건 - 창업사이트 - 새로운 창업매물 플랫폼</title>
+    <meta name="description" content="다양한 창업매물을 확인하고, AI 매물분석으로 맞춤형 창업 기회를 찾아보세요.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="#main-content" class="sr-only sr-only-focusable">본문 영역으로 바로가기</a>
+
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <!-- Properties Section -->
+        <section id="properties" class="section properties-section" aria-labelledby="properties-heading">
+            <div class="container">
+                <h2 id="properties-heading" class="section__title">창업물건</h2>
+                <div class="properties__filters" role="region" aria-label="창업물건 필터">
+                    <div class="filters__grid">
+                        <div class="form-group">
+                            <label for="region-filter" class="form-label">지역</label>
+                            <select id="region-filter" class="form-control">
+                                <option value="">전체</option>
+                                <option value="서울">서울</option>
+                                <option value="경기">경기</option>
+                                <option value="부산">부산</option>
+                                <option value="대구">대구</option>
+                                <option value="광주">광주</option>
+                                <option value="대전">대전</option>
+                                <option value="울산">울산</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="category-filter" class="form-label">업종</label>
+                            <select id="category-filter" class="form-control">
+                                <option value="">전체</option>
+                                <option value="외식업">외식업</option>
+                                <option value="서비스업">서비스업</option>
+                                <option value="도소매">도소매</option>
+                                <option value="프랜차이즈">프랜차이즈</option>
+                                <option value="카페">카페</option>
+                                <option value="뷰티">뷰티</option>
+                                <option value="교육">교육</option>
+                                <option value="기타">기타</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="subcategory-filter" class="form-label">세부 업종</label>
+                            <select id="subcategory-filter" class="form-control">
+                                <option value="">전체</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cost-filter" class="form-label">창업 비용</label>
+                            <select id="cost-filter" class="form-control">
+                                <option value="">전체</option>
+                                <option value="1000이하">1,000만 원 이하</option>
+                                <option value="1000-2000">1,000만 원 ~ 2,000만 원</option>
+                                <option value="2000-3000">2,000만 원 ~ 3,000만 원</option>
+                                <option value="3000이상">3,000만 원 이상</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="search-input" class="form-label">검색</label>
+                            <input type="text" id="search-input" class="form-control" placeholder="매물명, 지역, 키워드를 입력하세요">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn--primary" data-action="apply-filters">필터 적용</button>
+                </div>
+                <div class="properties__list" role="region" aria-label="매물 목록">
+                    <!-- Properties will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Property Detail Section (hidden by default) -->
+        <section id="property-detail" class="section property-detail-section hidden" aria-labelledby="property-detail-title">
+            <div class="container">
+                <button class="property-detail__back-link" id="back-to-list-btn" type="button">← 목록으로 돌아가기</button>
+                <div id="property-detail-content" role="region" aria-live="polite">
+                    <!-- 상세 매물 정보가 JavaScript로 렌더링 됩니다 -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

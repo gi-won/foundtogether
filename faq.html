@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>더프차 - FAQ - 올인원 점포·창업 플랫폼</title>
+    <meta name="description" content="창업, 매매, 법률 등 자주 묻는 질문에 대한 답변을 확인하세요.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a href="#main-content" class="sr-only sr-only-focusable">메인 콘텐츠로 바로가기</a>
+
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <!-- FAQ Section -->
+        <section id="faq" class="section faq-section" aria-labelledby="faq-heading">
+            <div class="container">
+                <h2 id="faq-heading" class="section__title">FAQ 게시판</h2>
+                <div class="faq__tabs" role="tablist" aria-label="FAQ 카테고리">
+                    <button class="faq__tab active" role="tab" aria-selected="true" aria-controls="faq-all" id="tab-all" data-category="">전체</button>
+                    <button class="faq__tab" role="tab" aria-selected="false" aria-controls="faq-trade" id="tab-trade" data-category="매매">매매</button>                    <button class="faq__tab" role="tab" aria-selected="false" aria-controls="faq-startup" id="tab-startup" data-category="창업">창업</button>
+                    <button class="faq__tab" role="tab" aria-selected="false" aria-controls="faq-legal" id="tab-legal" data-category="법률">법률</button>
+                </div>
+                <div class="faq__search">
+                    <label for="faq-search" class="form-label sr-only">FAQ 검색</label>
+                    <input type="text" id="faq-search" class="form-control" placeholder="FAQ 검색..." aria-label="FAQ 검색">
+                </div>
+                <div class="faq__list" role="region" aria-label="FAQ 목록">
+                    <!-- FAQs will be populated by JavaScript -->
+                </div>
+                <button class="btn btn--primary faq__add-btn" type="button" data-action="open-modal" data-modal-id="add-faq-modal" aria-label="새 FAQ 등록">
+                    FAQ 등록하기
+                </button>
+            </div>
+        </section>
+        
+        <!-- FAQ Detail Section (hidden by default) -->
+        <section id="faq-detail" class="section faq-detail-section hidden" aria-labelledby="faq-detail-title">
+            <div class="container">
+                <button class="btn btn--outline" id="back-to-faq-list-btn" type="button">&larr; 목록으로 돌아가기</button>
+                <div id="faq-detail-content">
+                    <!-- Detail content will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Add FAQ Modal -->
+    <div id="add-faq-modal" class="modal hidden" role="dialog" aria-labelledby="add-faq-modal-title" aria-hidden="true">
+        <div class="modal__overlay" aria-label="모달 닫기" role="button" tabindex="0"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2 id="add-faq-modal-title" class="modal__title">FAQ 등록</h2>
+                <button class="modal__close" aria-label="모달 닫기" type="button" data-action="close-modal" data-modal-id="add-faq-modal">×</button>
+            </div>
+            <div class="modal__body">
+                <form id="add-faq-form" role="form">
+                    <div class="form-group">
+                        <label for="faq-category" class="form-label">카테고리</label>
+                        <select id="faq-category" class="form-control" required>
+                            <option value="">선택하세요</option>
+                            <option value="매매">매매</option>
+                            <option value="창업">창업</option>
+                            <option value="법률">법률</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="faq-title" class="form-label">제목</label>
+                        <input type="text" id="faq-title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="faq-question" class="form-label">질문</label>
+                        <textarea id="faq-question" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <fieldset>
+                            <legend class="form-label">공개 설정</legend>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="faq-privacy" value="public" checked>
+                                    <span>공개</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="faq-privacy" value="private">
+                                    <span>비공개</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="form-group" id="password-group" style="display: none;">
+                        <label for="faq-password" class="form-label">비밀번호</label>
+                        <input type="password" id="faq-password" class="form-control">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn--secondary" data-action="close-modal" data-modal-id="add-faq-modal">취소</button>
+                        <button type="submit" class="btn btn--primary">등록하기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
